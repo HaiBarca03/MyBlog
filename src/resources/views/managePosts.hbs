@@ -1,0 +1,463 @@
+<style>
+    .container {
+        margin-top: 20px;
+    }
+
+    .post-card {
+        margin-bottom: 30px;
+    }
+
+    .post-card .post-media {
+        justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .post-card img {
+        width: 100%;
+        /* Ảnh chiếm toàn bộ chiều rộng của ô chứa */
+        height: 350px;
+        padding: 10px;
+    }
+
+    .post-card video {
+        width: 100%;
+        padding: 10px
+    }
+
+    .image-wrapper {
+        max-width: 48%;
+        padding: 5px;
+        height: auto;
+    }
+
+    .post-card .post-media {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .post-card .post-media .video-wrapper {
+        width: 90%;
+        /* Video chiếm toàn bộ chiều rộng của ô chứa */
+        margin-top: 10px;
+    }
+
+    .post-content {
+        padding: 15px;
+    }
+
+    .post-actions button {
+        margin-right: 10px;
+    }
+
+    .post-tags,
+    .post-categories,
+    .post-comments {
+        margin-top: 10px;
+    }
+    .post-card {
+        margin-bottom: 0;
+    }
+    .post-comments div {
+        margin-bottom: 10px;
+    }
+</style>
+<div class="container">
+    <h1>Manage Posts</h1>
+    <div style="display:flex;">
+        <div class="mb-3" style="padding-right: 20px;">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPostModal">Add New Post</button>
+        </div>
+        <div class="mb-3" style="padding-right: 20px;">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New
+                Category</button>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal">Delete
+                Category</button>
+        </div>
+    </div>
+    {{#each posts}}
+    <div class="card post-card">
+        <div class="card-header">
+            <h5 class="card-title">{{this.title}}</h5>
+            <small class="text-muted">By {{this.author}} on {{this.date}}</small>
+        </div>
+        <div class="card-body post-content">
+            {{#if this.featured}}
+            <div class="alert alert-info">Featured</div>
+            {{/if}}
+            <p>{{this.content}}</p>
+            <div class="post-media">
+                {{#each this.media.images}}
+                <div class="image-wrapper">
+                    <img src="{{this}}" alt="Image">
+                </div>
+                {{/each}}
+                {{#each this.media.videos}}
+                <div class="video-wrapper">
+                    <video controls>
+                        <source src="{{this}}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                {{/each}}
+            </div>
+            <div class="post-tags">
+                <strong>Tags:</strong>
+                {{#each this.tags}}
+                <span class="badge bg-secondary">{{this}}</span>
+                {{/each}}
+            </div>
+            <div class="post-categories">
+                <strong>Categories:</strong>
+                {{#each this.categories}}
+                <span class="badge bg-primary">{{this.name}}</span>
+                {{/each}}
+            </div>
+            <div class="post-comments">
+                <strong>Comments:</strong>
+                {{#each this.comments}}
+                <div>
+                    <p><strong>{{this.author}}:</strong> {{this.content}}</p>
+                    <small class="text-muted">{{this.date}}</small>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="card-footer post-actions">
+            <div class="card-footer post-actions">
+                <button class="btn btn-warning btn-sm edit-btn" id="edit-btn" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#editPostModal">Edit</button>
+                <button class="btn btn-danger btn-sm delete-post-btn" data-id="{{this._id}}">Delete</button>
+            </div>
+        </div>
+        </div>
+    {{/each}}
+
+    <!-- Add Post Modal -->
+    <style>
+        .modal-lg {
+            max-width: 80%;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
+    <!-- Modal HTML -->
+    <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPostModalLabel">Add New Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="close_form"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPostForm" action="/api/posts" method="POST">
+                        <div class="mb-3">
+                            <label for="author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="author" name="author" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="datetime-local" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="featured" class="form-label">Featured</label>
+                            <select class="form-control" id="featured" name="featured" required>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="slug" class="form-label">Slug</label>
+                            <input type="text" class="form-control" id="slug" name="slug" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control" id="tags" name="tags"
+                                placeholder="Comma separated tags" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categories" class="form-label">Categories</label>
+                            <select class="form-control" id="categories" name="categories" multiple required>
+                            {{#each categories}}
+                                <option value="{{this.id}}">{{name}}</option>
+                            {{/each}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="images" class="form-label">Images</label>
+                            <input type="text" class="form-control" id="images" name="images"
+                                placeholder="Comma separated image URLs" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="videos" class="form-label">Videos</label>
+                            <input type="text" class="form-control" id="videos" name="videos"
+                                placeholder="Comma separated video URLs">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCategoryForm" action="/categories" method="POST">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="categoryDescription" name="description" rows="4"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categorySlug" class="form-label">Slug</label>
+                            <input type="text" class="form-control" id="categorySlug" name="slug" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryUserId" class="form-label">User ID</label>
+                            <input type="text" class="form-control" id="categoryUserId" name="user_id" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal Edit Post -->
+<!-- Modal Edit Post -->
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPostModalLabel">Edit Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPostForm">
+                    <input type="hidden" id="editPostId" name="postId">
+                    <div class="mb-3">
+                        <label for="editAuthor" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="editAuthor" name="author" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editContent" class="form-label">Content</label>
+                        <textarea class="form-control" id="editContent" name="content" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDate" class="form-label">Date</label>
+                        <input type="datetime-local" class="form-control" id="editDate" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFeatured" class="form-label">Featured</label>
+                        <select class="form-control" id="editFeatured" name="featured" required>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSlug" class="form-label">Slug</label>
+                        <input type="text" class="form-control" id="editSlug" name="slug" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTags" class="form-label">Tags</label>
+                        <input type="text" class="form-control" id="editTags" name="tags" placeholder="Comma separated tags" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCategories" class="form-label">Categories</label>
+                        <select class="form-control" id="editCategories" name="categories" multiple required>
+                            {{#each categories}}
+                                <option value="{{this.id}}">{{name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editImages" class="form-label">Images</label>
+                        <input type="text" class="form-control" id="editImages" name="images" placeholder="Comma separated image URLs">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editVideos" class="form-label">Videos</label>
+                        <input type="text" class="form-control" id="editVideos" name="videos" placeholder="Comma separated video URLs">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePostModalLabel">Delete Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="categoryList">
+                    {{#each categories}}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{this.name}}
+                        <button class="btn btn-danger btn-sm delete-category-btn" data-id="{{this._id}}">Delete</button>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const deleteCategoryButtons = document.querySelectorAll('.delete-category-btn');
+    deleteCategoryButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const categoryId = event.target.getAttribute('data-id');
+            const confirmation = confirm('Are you sure you want to delete this category?');
+
+            if (confirmation) {
+                try {
+                    const response = await fetch(`/categories/${categoryId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.status === 204) {
+                        // Remove the category element from the DOM
+                        event.target.closest('.list-group-item').remove();
+                    } else {
+                        const result = await response.json();
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.error('Error deleting category:', error);
+                    alert('An error occurred while deleting the category.');
+                }
+            }
+        });
+    });
+
+    
+    // delete posts
+    const deleteButtons = document.querySelectorAll('.delete-post-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const postId = event.target.getAttribute('data-id');
+            const confirmationDelete = confirm('Are you sure you want to delete this post ?')
+
+            if(confirmationDelete) {
+                try {
+                    const response = await fetch(`/posts/delete/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (response.ok) {
+                        alert('Post deleted successfully.');
+                        window.location.href = '/managePosts';
+                    } else {
+                        const result = await response.json();
+                        alert(result.message || 'An error occurred while deleting the post.');
+                    }
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    alert('An error occurred while deleting the post.');
+                }
+            }
+        });
+    });
+
+const editPostButtons = document.querySelectorAll('.edit-btn');
+    
+    editPostButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const postID = event.target.getAttribute('data-id');
+            const response = await fetch(`/posts/edit/${postID}`);
+            const post = await response.json();
+
+            // Populate the form with existing data
+            document.getElementById('editPostId').value = post._id;
+            document.getElementById('editAuthor').value = post.author;
+            document.getElementById('editTitle').value = post.title;
+            document.getElementById('editContent').value = post.content;
+            document.getElementById('editDate').value = new Date(post.date).toISOString().slice(0, 16);
+            document.getElementById('editFeatured').value = post.featured ? 'true' : 'false';
+            document.getElementById('editSlug').value = post.slug;
+            document.getElementById('editTags').value = post.tags.join(', ');
+            document.getElementById('editCategories').value = post.categories.join(', ');
+            document.getElementById('editImages').value = post.images.join(', ');
+            document.getElementById('editVideos').value = post.videos.join(', ');
+        });
+    });
+
+    const editPostForm = document.getElementById('editPostForm');
+    if (editPostForm) {
+        editPostForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(editPostForm);
+            const postData = Object.fromEntries(formData.entries());
+            const postId = postData.postId;
+
+            try {
+                const response = await fetch(`/posts/edit/${postId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData),
+                });
+
+                if (response.ok) {
+                    alert('Post updated successfully');
+                    window.location.href = '/managePosts'; // Redirect to managePosts
+                } else {
+                    const result = await response.json();
+                    alert(result.message || 'An error occurred while updating the post.');
+                }
+            } catch (error) {
+                console.error('Error updating post:', error);
+                alert('An error occurred while updating the post.');
+            }
+        });
+    }
+
+});
+
+</script>

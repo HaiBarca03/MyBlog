@@ -1,47 +1,53 @@
 const Users = require('../models/userModel');
+const Posts = require('../models/postsModel')
 const ProfileUser = require('../models/profileModel');
 // Get profile user by user_id
+
 const getProfileUserByUserId = async (req, res) => {
-    try {
-        const { user_id } = req.params;
-        
-        // Chạy hai truy vấn song song
-        const [users, profileUser] = await Promise.all([
-            Users.findOne({ user_id }),
-            ProfileUser.findOne({ user_id })
-        ]);
-    
-        if (!users) {
-          return res.status(404).json({
-            status: 'fail',
-            message: 'User profile not found!'
-          });
-        }
-    
-        if (!profileUser) {
-          return res.status(404).json({
-            status: 'fail',
-            message: 'Additional profile information not found!'
-          });
-        }
-    
-        res.status(200).json({
-          status: 'success',
-          data: {
-            data: {
-                profile: users.profile,
-                profileUser: profileUser,
-              }
-          }
+  try {
+      // const user_id = req.user.user_id; // Lấy user_id từ req.user
+      const user_id = req.user ? req.user.user_id : null;
+      if (!user_id) {
+        // Khi không có user_id (người dùng chưa đăng nhập)
+        return res.render('userProfile', {
+            layout: 'main',
+            profile: null,
+            profileUser: null,
+            posts: []
         });
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        res.status(500).json({
-          status: 'fail',
-          message: 'Unable to fetch profile.'
-        });
-      }
+    }
+      // Chạy ba truy vấn song song
+      const [profileUser, posts] = await Promise.all([
+          ProfileUser.findOne({ user_id }),
+          Posts.find({ user_id })
+      ]);
+
+      // if (!profileUser) {
+      //   return res.status(404).json({
+      //     status: 'fail',
+      //     message: 'Additional profile information not found!'
+      //   });
+      // }
+
+      res.status(200).render('userProfile', {
+        status: 'success',
+        data: {
+          profile: req.user.profile,
+          profileUser: profileUser,
+          posts: posts
+        }
+      });
+
+  } catch (error) {
+      console.error('Error fetching profile:', error);
+      res.status(500).json({
+        status: 'fail',
+        message: 'Unable to fetch profile.'
+      });
+  }
 };
+
+
 // Tạo ProfileUser
 const createProfileUser = async (req, res) => {
   try {

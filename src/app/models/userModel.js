@@ -50,6 +50,10 @@ const userModel = new mongoose.Schema({
       required: true,
       unique: true
   },
+  admin: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
       type: Date,
       default: Date.now

@@ -1,6 +1,8 @@
 require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
+const { engine } = require('express-handlebars');
+const path = require('path');
 const app = require('./src/app')
 const PORT = process.env.PORT || 3000
 const DATABASE_USERNAME = process.env.DATABASE_USERNAME;
@@ -11,7 +13,7 @@ const DATABASE = `mongodb+srv://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATA
 const DATABASE_LOCAL = process.env.DATABASE_LOCAL
 
 // connect db
-mongoose.connect(DATABASE)
+mongoose.connect(DATABASE) 
 // mongoose.connect(DATABASE_LOCAL)
 .then(() => console.log('Database connected successfully'))
 .catch((error) => {console.log(error)})

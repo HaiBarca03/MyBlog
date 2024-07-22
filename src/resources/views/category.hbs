@@ -1,0 +1,19 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Posts in <span class="text-primary">{{title}}</span> Category</h1>
+
+  {{#if posts.length}}
+    <div class="list-group">
+      {{#each posts}}
+        <div class="list-group-item mb-3 border rounded">
+          <h2 class="h4">{{this.title}}</h2>
+          <p class="mb-2">{{this.content}}</p>
+          <a href="/post/{{slug}}" class="btn btn-primary">Read More</a>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="alert alert-info" role="alert">
+      No posts found in this category.
+    </div>
+  {{/if}}
+</div>

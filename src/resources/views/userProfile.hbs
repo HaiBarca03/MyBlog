@@ -1,0 +1,74 @@
+<div class="container mt-5">
+    <div class="row">
+      <!-- Profile and ProfileUser Section -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <img src="{{data.profile.profile_picture}}" class="profile-picture" alt="{{data.profile.name}}">
+            <h1 class="mt-3">{{data.profile.name}}</h1>
+            <p class="lead">{{data.profile.bio}}</p>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Skills</h3>
+                <ul class="list-group">
+                  {{#each data.profile.skills}}
+                  <li class="list-group-item">{{this}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+              <div class="col-md-12 mt-3">
+                <h3>Achievements</h3>
+                <ul class="list-group">
+                  {{#each data.profile.achievements}}
+                  <li class="list-group-item">{{this}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+              <div class="col-md-12 mt-3">
+                <h3>Featured Tags</h3>
+                <ul class="list-group">
+                  {{#each data.profileUser.featured_tags}}
+                  <li class="list-group-item">{{this}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+              <div class="col-md-12 mt-3">
+                <h3>Social Links</h3>
+                <ul class="list-group">
+                  <li class="list-group-item"><a href="{{data.profileUser.social_links.facebook}}" target="_blank">Facebook</a></li>
+                  <li class="list-group-item"><a href="{{data.profileUser.social_links.instagram}}" target="_blank">Instagram</a></li>
+                  <li class="list-group-item">Zalo: {{data.profileUser.social_links.zalo}}</li>
+                </ul>
+              </div>
+              <div class="col-md-12 mt-3">
+                <h3>Story</h3>
+                <p><strong>Caption:</strong> {{data.profileUser.story.caption}}</p>
+                <p><strong>Country:</strong> {{data.profileUser.story.country}}</p>
+                <p><strong>Work:</strong> {{data.profileUser.story.work}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts Section -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h3>Posts</h3>
+            {{#each data.posts}}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">{{this.title}}</h5>
+                <p class="card-text">{{this.content}}</p>
+                <p class="card-text"><small class="text-muted">Posted on {{this.createdAt}}</small></p>
+              </div>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

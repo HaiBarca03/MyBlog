@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const Users = require('../models/userModel');
 const contact = require('../models/contactModel');
+const Feedback = require('../models/feedbackModel')
 
 // Get all contact details
 const getContact = async (req, res) => {
@@ -23,32 +25,64 @@ const getContact = async (req, res) => {
   };
   
   // Get a specific contact by user_id
-const getContactByUserId = async (req, res) => {
+  const getContactByUserId = async (req, res) => {
+    const successMessage = req.query.message;
     try {
-      const { user_id } = req.params;
-      const contacts = await contact.findOne({ user_id }); // Fetch contact by user_id
-  
+      const user_id = '01'; // Fix cứng user_id là 01
+
+      // Tìm kiếm thông tin liên hệ của user_id = 01
+      const contacts = await contact.findOne({ user_id });
+
       if (!contacts) {
-        return res.status(404).json({
-          status: 'fail',
-          message: 'Contact not found!'
-        });
-      }
-  
-      res.status(200).json({
-        status: 'success',
-        data: {
-            contacts
-        }
+          return res.status(404).render('err', {
+              layout: 'main',
+              message: 'Contact not found!'
+            });
+          }
+          
+          res.render('contact', {
+            layout: 'main',
+            contacts: contacts,
+            isAuthenticated: !!req.user, // Xác định trạng thái đăng nhập
+            user: req.user,
+            successMessage
       });
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching contact details by user_id:', error);
-      res.status(500).json({
+      res.status(500).render('error', {
+          layout: 'main',
+          message: 'Unable to fetch contact details by user_id.'
+      });
+  }
+};
+
+const submitContactForm = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
         status: 'fail',
-        message: 'Unable to fetch contact details by user_id.'
+        message: 'You must be logged in to submit feedback.'
       });
     }
-  };
+
+    const { name, email, message } = req.body;
+    const newFeedback = new Feedback({
+      user_id: req.user.user_id,
+      name,
+      email,
+      message
+    });
+
+    await newFeedback.save();
+    res.redirect('/contact?message=feedback_success'); // Redirect to the contact page after successful submission
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    res.status(500).render('error', {
+      layout: 'main',
+      message: 'Unable to submit feedback.'
+    });
+  }
+};
 
 // Create a new contact by user_id
 const createContactByUserId = async (req, res) => {
@@ -131,5 +165,6 @@ module.exports = {
     getContact,
     getContactByUserId,
     createContactByUserId,
-    updateContactByUserId
+    updateContactByUserId,
+    submitContactForm
 };

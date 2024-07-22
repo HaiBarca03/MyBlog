@@ -1,0 +1,57 @@
+<main class="container mt-4">
+    <div class="col-mt-4">
+    {{#if posts.length}}
+    <div class="list-group post-card">
+      {{#each posts}}
+      <a href="post/{{slug}}" class="list-group-item mb-3">
+        <h3 class="mb-1">{{this.title}}</h3>
+        <p class="text-muted mb-1">Author: {{this.author}}</p>
+        <p>{{this.content}}</p>
+      </a>
+      {{/each}}
+    </div>
+    {{else}}
+    <p>No posts available.</p>
+    {{/if}}
+    </div>
+</main>
+
+<style>
+  /* Tùy chỉnh cho các hình ảnh bài viết */
+/* Khung cho bài viết */
+.post-card {
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 20px; 
+}
+
+.text-muted {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.text-decoration-none {
+    text-decoration: none;
+}
+
+.text-dark {
+    color: #212529;
+}
+
+.text-dark:hover {
+    color: #000;
+}
+
+.post-card h3 {
+    margin-bottom: 1rem;
+}
+
+.post-card p {
+    margin-bottom: 0.5rem;
+}
+
+
+</style>

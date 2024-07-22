@@ -51,22 +51,18 @@ const getCategories = async (req, res) => {
 // get posts by category slug
 const getPostsByCategorySlug = async (req, res) => {
   try {
-    // Get slug from request parameters
     const { slug } = req.params;
 
-    // Find category by slug and populate posts
     const category = await Category.findOne({ slug }).populate('posts');
 
-    // Check if category found
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    // Extract posts from category
-    const posts = category.posts;
-
-    // Send response with posts
-    res.status(200).json({ posts });
+    res.render('category', {
+      title: category.name,
+      posts: category.posts,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -87,12 +83,7 @@ const createCategory = async (req, res) => {
           posts: [] // Initialize with an empty array
       });
 
-      res.status(201).json({
-          status: 'success',
-          data: {
-              category: newCategory
-          }
-      });
+      res.redirect('/managePosts');
   } catch (err) {
       console.error('Error:', err.message); // Logging to debug errors
       res.status(400).json({
@@ -141,7 +132,7 @@ const deleteCategoryById = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    // Tìm và xóa danh mục theo ID
+    // Find and delete the category by ID
     const category = await Category.findByIdAndDelete(categoryId);
 
     if (!category) {

@@ -1,0 +1,80 @@
+<div class="container my-5">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Contact Information</h2>
+                <ul class="list-unstyled">
+                    <li><strong>Name:</strong> {{contacts.name}}</li>
+                    <li><strong>Email:</strong> <a href="mailto:{{contacts.email}}">{{contacts.email}}</a></li>
+                    <li><strong>Phone Number:</strong> <a href="tel:{{contacts.phoneNumber}}">{{contacts.phoneNumber}}</a></li>
+                    <li><strong>Address:</strong> {{contacts.address}}</li>
+                </ul>
+                <h3>Social Links</h3>
+                <ul class="list-unstyled">
+                    <li><a href="{{contacts.socialLinks.facebook}}" target="_blank">Facebook</a></li>
+                    <li><a href="{{contacts.socialLinks.instagram}}" target="_blank">Instagram</a></li>
+                    <li><a href="https://zalo.me/{{contacts.socialLinks.zalo}}" target="_blank">Zalo</a></li>
+                </ul>
+                <h3>Collaboration Info</h3>
+                <p><a href="mailto:{{contacts.collaborationInfo}}">{{contacts.collaborationInfo}}</a></p>
+            </div>
+            <div class="col-lg-6">
+                <h2>Contact Form</h2>
+                <form action="/contact/submit" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required {{#if user}}value="{{user.name}}"{{/if}}>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required {{#if user}}value="{{user.email}}"{{/if}}>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" {{#unless user}}disabled{{/unless}}>Submit</button>
+                    </form>
+                    {{#if successMessage}}
+                        {{#if successMessage}}
+                            <div id="success-alert" class="alert alert-success mt-3" role="alert">
+                            <strong>Success!</strong> Your feedback has been submitted.
+                            </div>
+                        {{else}}
+                            <div id="error-alert" class="alert alert-danger mt-3" role="alert">
+                            <strong>Error!</strong> Please try again later.
+                            </div>
+                        {{/if}}
+                    {{/if}}
+
+                    {{#unless user}}
+                    <div class="alert alert-warning mt-3" role="alert">
+                        You must be logged in to submit feedback.
+                    </div>
+                    {{/unless}}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const successAlert = document.getElementById('success-alert');
+            if (successAlert) {
+            setTimeout(() => {
+                successAlert.style.opacity = '0'; // Fade out effect
+                setTimeout(() => {
+                successAlert.style.display = 'none'; // Remove from the document flow
+                }, 500); // Delay to match the fade out effect
+            }, 2000); // 2 seconds delay
+            }
+
+            const errorAlert = document.getElementById('error-alert');
+            if (errorAlert) {
+            setTimeout(() => {
+                errorAlert.style.opacity = '0'; // Fade out effect
+                setTimeout(() => {
+                errorAlert.style.display = 'none'; // Remove from the document flow
+                }, 500); // Delay to match the fade out effect
+            }, 2000); // 2 seconds delay
+            }
+        });
+</script>

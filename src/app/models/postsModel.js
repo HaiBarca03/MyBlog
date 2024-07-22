@@ -32,26 +32,21 @@ const postsModels = new mongoose.Schema({
       type: String,
       required: true,
     },
-    categories: [String], // You can create a separate Category model for more complex relationships
+    categories: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category'
+    }],
     comments: [{
       author: String,
       content: String,
       date: Date,
     }],
+    likeCount: { type: Number, default: 0 },
     media: {
       images: [String], // Array of image URLs
       videos: [String] // Single video URL
     },
   });
-
-// const postsModels = new mongoose.Schema({
-//     username: { type: String, required: true, unique: true },
-//     password: { type: String, required: true },
-//     email: { type: String, required: true, unique: true },
-//     profile: { type: profileSchema, required: true }
-// });
-
-//const User = mongoose.model('User', userSchema);
 
 const Posts = mongoose.model('Posts', postsModels)
 
