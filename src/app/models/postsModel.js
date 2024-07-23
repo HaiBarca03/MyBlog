@@ -48,6 +48,9 @@ const postsModels = new mongoose.Schema({
     },
   });
 
+
+postsModels.index({ title: 'text', content: 'text', author: 'text', tags: 'text' });
+
 const Posts = mongoose.model('Posts', postsModels)
 
 module.exports = Posts

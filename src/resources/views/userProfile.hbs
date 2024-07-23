@@ -1,74 +1,276 @@
 <div class="container mt-5">
-    <div class="row">
-      <!-- Profile and ProfileUser Section -->
-      <div class="col-md-6">
-        <div class="card mb-4">
-          <div class="card-header">
-            <img src="{{data.profile.profile_picture}}" class="profile-picture" alt="{{data.profile.name}}">
-            <h1 class="mt-3">{{data.profile.name}}</h1>
-            <p class="lead">{{data.profile.bio}}</p>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-12">
-                <h3>Skills</h3>
-                <ul class="list-group">
-                  {{#each data.profile.skills}}
-                  <li class="list-group-item">{{this}}</li>
-                  {{/each}}
-                </ul>
-              </div>
-              <div class="col-md-12 mt-3">
-                <h3>Achievements</h3>
-                <ul class="list-group">
-                  {{#each data.profile.achievements}}
-                  <li class="list-group-item">{{this}}</li>
-                  {{/each}}
-                </ul>
-              </div>
-              <div class="col-md-12 mt-3">
-                <h3>Featured Tags</h3>
-                <ul class="list-group">
-                  {{#each data.profileUser.featured_tags}}
-                  <li class="list-group-item">{{this}}</li>
-                  {{/each}}
-                </ul>
-              </div>
-              <div class="col-md-12 mt-3">
-                <h3>Social Links</h3>
-                <ul class="list-group">
-                  <li class="list-group-item"><a href="{{data.profileUser.social_links.facebook}}" target="_blank">Facebook</a></li>
-                  <li class="list-group-item"><a href="{{data.profileUser.social_links.instagram}}" target="_blank">Instagram</a></li>
-                  <li class="list-group-item">Zalo: {{data.profileUser.social_links.zalo}}</li>
-                </ul>
-              </div>
-              <div class="col-md-12 mt-3">
-                <h3>Story</h3>
+  <div class="row">
+    <!-- Profile and ProfileUser Section -->
+    <div class="col-md-6 sticky-sidebar">
+      <div class="card mb-4">
+        <div class="card-header">
+          <img src="{{data.profile.profile_picture}}" class="profile-picture rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+          <h1 class="mt-3">{{data.profile.name}}</h1>
+          <p class="lead">{{data.profile.bio}}</p>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Skills</h3>
+              <ul class="list-group" id="profileSkills">
+                {{#each data.profile.skills}}
+                <li class="list-group-item">{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+            <div class="col-md-12 mt-3">
+              <h3>Achievements</h3>
+              <ul class="list-group" id="profileAchievements">
+                {{#each data.profile.achievements}}
+                <li class="list-group-item">{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+            <div class="col-md-12 mt-3">
+              <h3>Featured Tags</h3>
+              <ul class="list-group" id="profileFeaturedTags">
+                {{#each data.profileUser.featured_tags}}
+                <li class="list-group-item">{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+            <div class="col-md-12 mt-3">
+              <h3>Social Links</h3>
+              <ul class="list-group" id="profileSocialLinks">
+                <li class="list-group-item"><a href="{{data.profileUser.social_links.facebook}}" target="_blank">Facebook</a></li>
+                <li class="list-group-item"><a href="{{data.profileUser.social_links.instagram}}" target="_blank">Instagram</a></li>
+                <li class="list-group-item">Zalo: {{data.profileUser.social_links.zalo}}</li>
+              </ul>
+            </div>
+            <div class="col-md-12 mt-3">
+              <h3>Story</h3>
+              <div id="profileStory">
                 <p><strong>Caption:</strong> {{data.profileUser.story.caption}}</p>
                 <p><strong>Country:</strong> {{data.profileUser.story.country}}</p>
                 <p><strong>Work:</strong> {{data.profileUser.story.work}}</p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Posts Section -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h3>Posts</h3>
-            {{#each data.posts}}
-            <div class="card mb-3">
-              <div class="card-body">
-                <h5 class="card-title">{{this.title}}</h5>
-                <p class="card-text">{{this.content}}</p>
-                <p class="card-text"><small class="text-muted">Posted on {{this.createdAt}}</small></p>
-              </div>
-            </div>
-            {{/each}}
+          <div class="card-footer text-end">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateProfileForm">
+              Update Profile
+            </button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Posts Section -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3>Posts</h3>
+          {{#each data.posts}}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">{{this.title}}</h5>
+              <p class="card-text">{{this.content}}</p>
+              <p class="card-text"><small class="text-muted">Posted on {{this.createdAt}}</small></p>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- Update Profile Form Modal -->
+<div id="updateProfileForm" class="modal fade" tabindex="-1" aria-labelledby="updateProfileFormLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateProfileFormLabel">Update Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="updateProfileFormContent">
+          <div class="mb-3">
+            <label for="updateName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="updateName" value="{{data.profile.name}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateBio" class="form-label">Bio</label>
+            <textarea class="form-control" id="updateBio">{{data.profile.bio}}</textarea>
+          </div>
+          <div class="mb-3">
+            <label for="updateAvt" class="form-label">Avatar URL</label>
+            <input type="text" class="form-control" id="updateAvt" value="{{data.profile.profile_picture}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateSkills" class="form-label">Skills (comma-separated)</label>
+            <input type="text" class="form-control" id="updateSkills" value="{{data.profile.skills}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateAchievements" class="form-label">Achievements (comma-separated)</label>
+            <input type="text" class="form-control" id="updateAchievements" value="{{data.profile.achievements}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateFeaturedTags" class="form-label">Featured Tags (comma-separated)</label>
+            <input type="text" class="form-control" id="updateFeaturedTags" value="{{data.profileUser.featured_tags}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateFacebook" class="form-label">Facebook</label>
+            <input type="text" class="form-control" id="updateFacebook" value="{{data.profileUser.social_links.facebook}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateInstagram" class="form-label">Instagram</label>
+            <input type="text" class="form-control" id="updateInstagram" value="{{data.profileUser.social_links.instagram}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateZalo" class="form-label">Zalo</label>
+            <input type="text" class="form-control" id="updateZalo" value="{{data.profileUser.social_links.zalo}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateCaption" class="form-label">Caption</label>
+            <input type="text" class="form-control" id="updateCaption" value="{{data.profileUser.story.caption}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateCountry" class="form-label">Country</label>
+            <input type="text" class="form-control" id="updateCountry" value="{{data.profileUser.story.country}}">
+          </div>
+          <div class="mb-3">
+            <label for="updateWork" class="form-label">Work</label>
+            <input type="text" class="form-control" id="updateWork" value="{{data.profileUser.story.work}}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+
+.sticky-sidebar {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0; /* Stick to the top of the viewport */
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Scrollable if content overflows */
+}
+
+.profile-picture {
+  border: 4px solid #e9ecef;
+  padding: 5px;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const updateProfileForm = document.getElementById('updateProfileFormContent');
+  const profilePictureElement = document.querySelector('.profile-picture');
+
+  updateProfileForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = {
+      name: document.getElementById('updateName').value,
+      bio: document.getElementById('updateBio').value,
+      profile_picture: document.getElementById('updateAvt').value,
+      skills: document.getElementById('updateSkills').value.split(',').map(skill => skill.trim()),
+      achievements: document.getElementById('updateAchievements').value.split(',').map(achievement => achievement.trim()),
+      featured_tags: document.getElementById('updateFeaturedTags').value.split(',').map(tag => tag.trim()),
+      facebook: document.getElementById('updateFacebook').value,
+      instagram: document.getElementById('updateInstagram').value,
+      zalo: document.getElementById('updateZalo').value,
+      caption: document.getElementById('updateCaption').value,
+      country: document.getElementById('updateCountry').value,
+      work: document.getElementById('updateWork').value
+    };
+
+    fetch('/users/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Profile updated successfully');
+        updateUIAfterSuccess(formData);
+        //$('#updateProfileForm').modal('hide');
+        window.location.reload(); 
+      } else {
+        alert('Failed to update profile: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while updating the profile');
+    });
+  });
+
+  // Preview profile picture when URL changes
+  document.getElementById('updateAvt').addEventListener('input', function(e) {
+    previewProfilePicture(e.target.value);
+  });
+
+  function previewProfilePicture(url) {
+    if (profilePictureElement) {
+      profilePictureElement.src = url;
+    }
+  }
+
+  function updateUIAfterSuccess(formData) {
+    // Update profile picture
+    if (profilePictureElement) {
+      profilePictureElement.src = formData.profile_picture;
+    }
+
+    // Update other UI elements
+    document.querySelector('h1').textContent = formData.name;
+    document.querySelector('.lead').textContent = formData.bio;
+
+    // Update skills
+    const skillsList = document.getElementById('profileSkills');
+    skillsList.innerHTML = formData.skills.map(skill => `<li class="list-group-item">${skill}</li>`).join('');
+
+    // Update achievements
+    const achievementsList = document.getElementById('profileAchievements');
+    achievementsList.innerHTML = formData.achievements.map(achievement => `<li class="list-group-item">${achievement}</li>`).join('');
+
+    // Update featured tags
+    const tagsList = document.getElementById('profileFeaturedTags');
+    tagsList.innerHTML = formData.featured_tags.map(tag => `<li class="list-group-item">${tag}</li>`).join('');
+
+    // Update social links
+    const socialLinks = document.getElementById('profileSocialLinks');
+    socialLinks.innerHTML = `
+      <li class="list-group-item"><a href="${formData.facebook}" target="_blank">Facebook</a></li>
+      <li class="list-group-item"><a href="${formData.instagram}" target="_blank">Instagram</a></li>
+      <li class="list-group-item">Zalo: ${formData.zalo}</li>
+    `;
+
+    // Update story
+    const story = document.getElementById('profileStory');
+    story.innerHTML = `
+      <p><strong>Caption:</strong> ${formData.caption}</p>
+      <p><strong>Country:</strong> ${formData.country}</p>
+      <p><strong>Work:</strong> ${formData.work}</p>
+    `;
+  }
+});
+</script>

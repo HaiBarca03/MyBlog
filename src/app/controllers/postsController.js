@@ -6,12 +6,14 @@ const {  adminAuth, authenticate} = require('../../middleware/authMiddleware')
 const getHome = async (req, res) => {
   try {
     // Lấy các bài viết mới nhất
-    const posts = await Posts.find().sort({ createdAt: -1 }).limit(10); // Giới hạn số lượng bài viết nếu cần
+    const posts = await Posts.find().sort({ createdAt: -1 }).limit(5); // Giới hạn số lượng bài viết nếu cần
+    const noResults = req.query.noResults === 'true';
 
     // Render trang chủ với danh sách bài viết
     res.render('home', {
       title: 'Home Page',
       posts: posts,
+      noResults: noResults
     });
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -361,6 +363,24 @@ const like = async (req, res) => {
   }
 };
 
+const search = async (req, res) => {
+  const searchTerm = req.query.searchTerm || '';
+  
+  try {
+    const posts = await Posts.find({
+      $text: { $search: searchTerm }
+    }).exec();
+    
+    if (posts.length > 0) {
+      res.render('search', { title: 'Search Results', posts, searchTerm });
+    } else {
+      res.redirect('/home?noResults=true'); // Redirect to home if no results found
+    }
+  } catch (err) {
+    console.error(err);
+    res.redirect('/home'); // Redirect to home on error
+  }
+};
 
 module.exports = {
     getHome,
@@ -374,5 +394,6 @@ module.exports = {
     getUserCmt,
     editComment,
     deleteComment,
-    like
+    like,
+    search
 }

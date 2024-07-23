@@ -12,11 +12,13 @@ const {
     getUserCmt,
     editComment,
     deleteComment,
-    like
+    like,
+    search
 } = require('../app/controllers/postsController')
 
 const router = express.Router()
 
+router.get('/search', search);
 router.get('/managePosts', authenticate, getPosts);
 router.post('/api/posts', authenticate, adminAuth, createPost);
 router.get('/post/:slug', getPostsBySlug)

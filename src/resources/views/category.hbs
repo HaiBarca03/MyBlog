@@ -6,7 +6,7 @@
       {{#each posts}}
         <div class="list-group-item mb-3 border rounded">
           <h2 class="h4">{{this.title}}</h2>
-          <p class="mb-2">{{this.content}}</p>
+          <p class="mb-2 post-content">{{this.content}}</p>
           <a href="/post/{{slug}}" class="btn btn-primary">Read More</a>
         </div>
       {{/each}}
@@ -17,3 +17,14 @@
     </div>
   {{/if}}
 </div>
+<style>
+  .post-content {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 7.5em; /* Điều chỉnh giá trị này nếu cần */
+    line-height: 1.5em; /* Điều chỉnh giá trị này nếu cần */
+}
+</style>

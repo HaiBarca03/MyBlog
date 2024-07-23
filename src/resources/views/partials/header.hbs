@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="header-blog navbar navbar-expand-lg navbar-light fixed-top bg-blg">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">My Blog</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,9 +23,9 @@
           <a class="nav-link active" aria-current="page" href="/contact">Contact</a>
         </li>
       </ul>
-      <form class="d-flex me-3">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+      <form class="d-flex me-3" action="/search" method="GET">
+          <input class="form-control me-2" type="search" name="searchTerm" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
@@ -57,7 +57,14 @@
   </div>
 </nav>
 <style>
+  .header-blog {
+    padding: 10px auto;
+  }
   .container-fluid {
     max-width: 1200px;
   }
+    .bg-blg {
+    background: aquamarine;
+    /* background-color: #f8f9fa !important; */
+}
 </style>

@@ -201,11 +201,15 @@
                             {{/each}}
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="images" class="form-label">Images</label>
-                            <input type="text" class="form-control" id="images" name="images"
-                                placeholder="Comma separated image URLs" required>
-                        </div>
+<div class="mb-3">
+    <label for="images" class="form-label">Images</label>
+    <div id="imageInputs">
+        <div class="input-group mb-2">
+            <input type="text" class="form-control" name="images[]" placeholder="Enter image URL">
+            <button type="button" class="btn btn-outline-secondary add-image-input">+</button>
+        </div>
+    </div>
+</div>
                         <div class="mb-3">
                             <label for="videos" class="form-label">Videos</label>
                             <input type="text" class="form-control" id="videos" name="videos"
@@ -303,10 +307,13 @@
                             {{/each}}
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="editImages" class="form-label">Images</label>
-                        <input type="text" class="form-control" id="editImages" name="images" placeholder="Comma separated image URLs">
-                    </div>
+<div class="mb-3">
+    <label for="editImages" class="form-label">Images</label>
+    <div id="editImageInputs">
+        <!-- Existing image inputs will be added here dynamically -->
+    </div>
+    <button type="button" class="btn btn-outline-secondary add-edit-image-input">Add Image</button>
+</div>
                     <div class="mb-3">
                         <label for="editVideos" class="form-label">Videos</label>
                         <input type="text" class="form-control" id="editVideos" name="videos" placeholder="Comma separated video URLs">
@@ -343,6 +350,29 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+        function addImageInput(container, value = '') {
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `
+                <input type="text" class="form-control" name="images[]" value="${value}" placeholder="Enter image URL">
+                <button type="button" class="btn btn-outline-secondary remove-image-input">-</button>
+            `;
+            container.appendChild(div);
+
+            div.querySelector('.remove-image-input').addEventListener('click', function() {
+                container.removeChild(div);
+            });
+        }
+
+        document.querySelector('.add-image-input').addEventListener('click', function() {
+            addImageInput(document.getElementById('imageInputs'));
+        });
+
+        document.querySelector('.add-edit-image-input').addEventListener('click', function() {
+            addImageInput(document.getElementById('editImageInputs'));
+        });
+
     const deleteCategoryButtons = document.querySelectorAll('.delete-category-btn');
     deleteCategoryButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
@@ -410,6 +440,7 @@ const editPostButtons = document.querySelectorAll('.edit-btn');
             const postID = event.target.getAttribute('data-id');
             const response = await fetch(`/posts/edit/${postID}`);
             const post = await response.json();
+            const editImageInputs = document.getElementById('editImageInputs');
 
             // Populate the form with existing data
             document.getElementById('editPostId').value = post._id;
@@ -421,7 +452,8 @@ const editPostButtons = document.querySelectorAll('.edit-btn');
             document.getElementById('editSlug').value = post.slug;
             document.getElementById('editTags').value = post.tags.join(', ');
             document.getElementById('editCategories').value = post.categories.join(', ');
-            document.getElementById('editImages').value = post.images.join(', ');
+            //editImageInputs.innerHTML = ''; // Clear existing inputs
+            post.images.forEach(url => addImageInput(editImageInputs, url));
             document.getElementById('editVideos').value = post.videos.join(', ');
         });
     });

@@ -17,7 +17,7 @@ const router = express.Router()
 // router.get('/profile/:user_id', getProfileUserByUserId);
 router.get('/profile/', authenticate, getProfileUserByUserId);
 router.post('/users/profile/:user_id', createProfileUser);
-router.put('/users/profile/:user_id', updateProfileUser);
+router.put('/users/profile', authenticate, updateProfileUser);
 router.delete('/users/profile/:user_id', deleteProfileUser);
 router.delete('/users/profile/:user_id/delete-fields', deleteProfileUserFields);
 

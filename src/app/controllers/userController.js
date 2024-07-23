@@ -96,38 +96,76 @@ const createProfileUser = async (req, res) => {
 // Cập nhật ProfileUser
 const updateProfileUser = async (req, res) => {
   try {
-    const { user_id } = req.params;
+    const user_id = req.user ? req.user.user_id : null;
 
-    // Kiểm tra xem user_id có tồn tại trong ProfileUser không
-    const profileUser = await ProfileUser.findOne({ user_id });
-    if (!profileUser) {
-      return res.status(404).json({
+    if (!user_id) {
+      return res.status(401).json({
         status: 'fail',
-        message: 'ProfileUser not found for this user_id.'
+        message: 'Unauthorized. User ID is required.'
       });
     }
 
-    // Cập nhật tất cả các trường ngoại trừ user_id
-    const updatedData = { ...req.body };
-    delete updatedData.user_id;
+    // Find the user
+    const user = await Users.findOne({ user_id });
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found.'
+      });
+    }
 
-    const updatedProfileUser = await ProfileUser.findOneAndUpdate(
-      { user_id },
-      { $set: updatedData },
-      { new: true, runValidators: true }
-    );
+    // Update user profile
+    const userProfileData = {
+      name: req.body.name,
+      bio: req.body.bio,
+      profile_picture: req.body.profile_picture,
+      skills: req.body.skills,
+      achievements: req.body.achievements
+    };
 
+    user.profile = { ...user.profile, ...userProfileData };
+    user.updatedAt = new Date();
+
+    // Find or create ProfileUser
+    let profileUser = await ProfileUser.findOne({ user_id });
+    if (!profileUser) {
+      profileUser = new ProfileUser({ user_id });
+    }
+
+    // Update ProfileUser
+    const profileUserData = {
+      featured_tags: req.body.featured_tags,
+      social_links: {
+        facebook: req.body.facebook,
+        instagram: req.body.instagram,
+        zalo: req.body.zalo
+      },
+      story: {
+        caption: req.body.caption,
+        country: req.body.country,
+        work: req.body.work
+      }
+    };
+
+    Object.assign(profileUser, profileUserData);
+
+    // Save both documents
+    await Promise.all([user.save(), profileUser.save()]);
     res.status(200).json({
       status: 'success',
       data: {
-        profileUser: updatedProfileUser
+        user: {
+          ...user.toObject(),
+          profileUser: profileUser.toObject()
+        }
       }
     });
+    // res.redirect('/userProfile');
   } catch (error) {
-    console.error('Error updating ProfileUser:', error);
+    console.error('Error updating profile:', error);
     res.status(500).json({
       status: 'fail',
-      message: 'Unable to update ProfileUser.'
+      message: 'Unable to update profile.'
     });
   }
 };
