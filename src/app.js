@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const fetchCategories = require('./middleware/fetchCategories');
 // const setUserId = require('./middleware/SetUser_id');
-const authenticate  = require('./middleware/authMiddleware');
+const authenticate = require('./middleware/authMiddleware');
 const postsRouter = require('../src/router/postsRouter')
 const categoryRouter = require('../src/router/categoriesRouter')
 const contactRouter = require('../src/router/contactRouter')
@@ -16,22 +16,23 @@ const authRoutes = require('../src/router/authRouter');
 const app = express()
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.json());
 app.engine('.hbs', engine({
-    layoutsDir: path.join(__dirname, 'resources/views/layouts'), // Đường dẫn tới layouts
-    defaultLayout: 'main', // Tên file layout chính
-    extname: '.hbs', // Phần mở rộng của file template
-    runtimeOptions: {
-        allowProtoPropertiesByDefault: true,
-        allowProtoMethodsByDefault: true
-      },
-    helpers: {
-      eq: function(a, b) {
-        return a === b;
-      }
+  layoutsDir: path.join(__dirname, 'resources/views/layouts'), // Đường dẫn tới layouts
+  defaultLayout: 'main', // Tên file layout chính
+  extname: '.hbs', // Phần mở rộng của file template
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  },
+  helpers: {
+    eq: function (a, b) {
+      return a === b;
     }
-  }));
+  }
+}));
 
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
