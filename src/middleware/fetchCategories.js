@@ -14,4 +14,4 @@ const fetchCategories = async (req, res, next) => {
   }
 };
 
-  module.exports = fetchCategories;
+module.exports = fetchCategories;

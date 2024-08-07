@@ -4,7 +4,6 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const fetchCategories = require('./middleware/fetchCategories');
-// const setUserId = require('./middleware/SetUser_id');
 const authenticate = require('./middleware/authMiddleware');
 const postsRouter = require('../src/router/postsRouter')
 const categoryRouter = require('../src/router/categoriesRouter')
@@ -37,7 +36,7 @@ app.engine('.hbs', engine({
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 
-app.use(fetchCategories);
+app.use('/', fetchCategories);
 // app.use(setUserId);
 // app.use(authMiddleware);
 
