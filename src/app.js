@@ -36,7 +36,7 @@ app.engine('.hbs', engine({
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 
-app.use('/', fetchCategories);
+app.use(fetchCategories);
 // app.use(setUserId);
 // app.use(authMiddleware);
 

@@ -6,7 +6,7 @@ const Category = require('../models/categoriesModel');
 const getCategories = async (req, res) => {
   try {
     // Attempt to find an existing category
-    const existingCategory = await Category.findOne({}); 
+    const existingCategory = await Category.findOne({});
 
     if (existingCategory) {
       // Category already exists, populate posts and return
@@ -40,7 +40,7 @@ const getCategories = async (req, res) => {
       });
     }
   } catch (err) {
-    console.error('Error fetching categories:', err); 
+    console.error('Error fetching categories:', err);
     res.status(400).json({
       status: 'fail',
       message: 'Invalid data sent!'
@@ -72,24 +72,24 @@ const getPostsByCategorySlug = async (req, res) => {
 // Create a new category
 const createCategory = async (req, res) => {
   try {
-      const { description, name, slug, user_id } = req.body;
+    const { description, name, slug, user_id } = req.body;
 
-      // Create the category without posts
-      const newCategory = await Category.create({
-          description,
-          name,
-          slug,
-          user_id,
-          posts: [] // Initialize with an empty array
-      });
+    // Create the category without posts
+    const newCategory = await Category.create({
+      description,
+      name,
+      slug,
+      user_id,
+      posts: [] // Initialize with an empty array
+    });
 
-      res.redirect('/managePosts');
+    res.redirect('/managePosts');
   } catch (err) {
-      console.error('Error:', err.message); // Logging to debug errors
-      res.status(400).json({
-          status: 'fail',
-          message: 'Invalid data sent!'
-      });
+    console.error('Error:', err.message); // Logging to debug errors
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent!'
+    });
   }
 };
 
@@ -160,5 +160,5 @@ module.exports = {
   createCategory,
   getPostsByCategorySlug,
   updateCategoryById,
-  deleteCategoryById
+  deleteCategoryById,
 };

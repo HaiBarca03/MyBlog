@@ -7,10 +7,8 @@ const fetchCategories = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Error fetching categories:', error);
-    res.status(500).json({
-      status: 'fail',
-      message: 'Unable to fetch categories.'
-    });
+    res.locals.categories = [];
+    next(); // Proceed even if there's an error
   }
 };
 

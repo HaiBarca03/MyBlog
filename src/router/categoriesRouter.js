@@ -1,6 +1,7 @@
 const express = require('express')
 const Category = require('../app/models/categoriesModel')
-const {getCategories, getPostsByCategorySlug, createCategory, updateCategoryById, deleteCategoryById} = require('../app/controllers/categoriesController')
+const fetchCategories = require('../middleware/fetchCategories')
+const { getCategories, getPostsByCategorySlug, createCategory, updateCategoryById, deleteCategoryById } = require('../app/controllers/categoriesController')
 const router = express.Router()
 
 router.get('/categories', getCategories)
